@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { contactFormTemplate } from "../../../../lib/contactFormTemplate";
+import { writeClient } from "@/lib/sanity";
+import { advertiseFormTemplate } from "../../../../lib/advertiseFormTemplate";
 import nodemailer from "nodemailer";
 
 type VerifyResponse = {
@@ -9,9 +10,9 @@ type VerifyResponse = {
 
 export async function POST(req: Request) {
   try {
-    const { name, question, email, message, recaptchaToken } = await req.json();
+    const { name, businessName, email, message , recaptchaToken } = await req.json();
 
-    if (!name || !question || !email || !message || !recaptchaToken) {
+    if (!name || !businessName || !email || !message || !recaptchaToken) {
       return NextResponse.json(
         { success: false, error: "All fields are required" },
         { status: 400 }
@@ -42,6 +43,17 @@ export async function POST(req: Request) {
       );
     }
 
+    const doc = {
+      _type: "advertiseFormSubmission",
+      name,
+      businessName,
+      email,
+      message,
+      createdAt: new Date().toISOString(),
+    };
+
+    const result = await writeClient.create(doc);
+
     // ✅ Send email
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -54,19 +66,21 @@ export async function POST(req: Request) {
     });
 
     await transporter.sendMail({
-      from: `"The Local Loop FL | Contact" <${process.env.SMTP_USER}>`,
+      from: `"The Local Loop FL | Advertise" <${process.env.SMTP_USER}>`,
       to: process.env.SMTP_USER,
-      subject: `New Contact Form Submission from ${name}`,
-      html: contactFormTemplate(name, email, question, message),
+      subject: `New Advertising Request from ${name}`,
+      html: advertiseFormTemplate(name, businessName, email, message),
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "Email sent successfully",
-    });
+    return NextResponse.json({ success: true, id: result._id });
   } catch (err: unknown) {
-    console.error("Contact form error:", err);
-    const message = err instanceof Error ? err.message : "Something went wrong";
+    console.error("Sanity form submission error:", err);
+
+    let message = "Something went wrong";
+    if (err instanceof Error) {
+      message = err.message;
+    }
+
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
