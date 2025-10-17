@@ -62,13 +62,22 @@ export async function POST(req: Request) {
     }
 
     // ✅ Send admin email
-    await transporter.sendMail({
-      from: `"The Local Loop FL | Advertise" <${process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USER,
-      subject: `New Advertising Request from ${name}`,
-      html: advertiseFormTemplate(name, businessName, email, phone, message, adZone || undefined,   !!file),
-      attachments,
-    });
+await transporter.sendMail({
+  from: `"The Local Loop FL | Advertise" <${process.env.SMTP_USER}>`,
+  to: process.env.SMTP_USER,
+  subject: `New Advertising Request from ${name}`,
+  html: advertiseFormTemplate(
+    name,
+    businessName,
+    email,
+    phone,
+    message,
+    adZone || undefined,
+    !!file
+  ),
+  attachments,
+});
+
 
     // ✅ Auto reply to user
     await transporter.sendMail({
