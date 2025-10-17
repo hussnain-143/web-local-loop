@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       from: `"The Local Loop FL | Advertise" <${process.env.SMTP_USER}>`,
       to: process.env.SMTP_USER,
       subject: `New Advertising Request from ${name}`,
-      html: advertiseFormTemplate(name, businessName, email, message),
+      // html: advertiseFormTemplate(name, businessName, email, message),
     });
 
     return NextResponse.json({ success: true, id: result._id });
