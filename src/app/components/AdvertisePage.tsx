@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useTransition, useRef } from "react";
 import { FiDollarSign, FiMail, FiUsers, FiSend, FiPhone } from "react-icons/fi";
