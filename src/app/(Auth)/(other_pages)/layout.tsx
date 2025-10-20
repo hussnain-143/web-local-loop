@@ -16,7 +16,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch data once client-side
   useEffect(() => {
     async function loadData() {
       try {
