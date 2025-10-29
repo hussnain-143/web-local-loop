@@ -7,12 +7,12 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "moduleResolution": "NodeNext", // or "nodenext"
-    "module": "NodeNext",
     "plugins": [
       {
         "name": "next"
